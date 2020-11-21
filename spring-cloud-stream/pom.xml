@@ -13,5 +13,12 @@
     </modules>
     <packaging>pom</packaging>
 
+    <!--继承spring-boot-starter-parent父工程-->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.5.RELEASE</version>
+        <relativePath/>
+    </parent>
 
 </project>
