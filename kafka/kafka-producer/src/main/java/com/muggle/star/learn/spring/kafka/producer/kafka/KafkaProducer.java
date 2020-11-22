@@ -25,7 +25,7 @@ public class KafkaProducer {
     /**
      * 自定义topic
      */
-    public static final String TOPIC_TEST = "test_topic_01";
+    public static final String TOPIC_TEST = "test_topic_02";
 
 
     public void send(String topic,String message) {

@@ -3,13 +3,15 @@ server:
 
 
 spring:
-  application:
-    name: output-demo
   cloud:
     stream:
       kafka:
         binder:
           brokers: 192.168.0.200:9092
-          zk-nodes: 192.168.0.200:2182
+      default-binder: kafka
+      bindings:
+        msg_output:
+          destination: test_topic_01
+          binder: kafka
 
 

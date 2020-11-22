@@ -1,26 +1,26 @@
 package com.mugglestar.learn.spring.scs.stream;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.messaging.Source;
-import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.cloud.stream.annotation.Output;
+import org.springframework.messaging.MessageChannel;
 
 /**
  * @author MuggleStar
  * @date 2020/11/21 15:05
  */
 
-@EnableBinding(Source.class)
-public class SendService {
+public interface SendService {
 
-    @Autowired
-    private Source source;
+    String OUTPUT_CHANNEL ="test_topic_01";
+    String ERROR_CHANNEL ="test_topic_01";
 
-    public void sendMessage(String msg) {
-        try {
-            source.output().send(MessageBuilder.withPayload(msg).build());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    /**
+     * 通过Output注解定义输出通道
+     * @return
+     */
+    @Output(SendService.OUTPUT_CHANNEL)
+    MessageChannel messageOutput();
+
+    @Output(SendService.ERROR_CHANNEL)
+    MessageChannel errorOutput();
+
 }
