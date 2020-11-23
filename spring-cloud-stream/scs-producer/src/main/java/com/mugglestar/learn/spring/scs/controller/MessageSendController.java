@@ -25,9 +25,9 @@ public class MessageSendController {
         return "success";
     }
 
-    @RequestMapping("/sendMessage2")
+    @RequestMapping("/userLogin")
     public String sendErr(String message){
-        producer.errorOutput().send(MessageBuilder.withPayload(message).build());
+        producer.userLogin().send(MessageBuilder.withPayload(message).build());
         return "success";
     }
 
