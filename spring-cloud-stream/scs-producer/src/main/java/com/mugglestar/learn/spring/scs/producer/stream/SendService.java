@@ -1,4 +1,4 @@
-package com.mugglestar.learn.spring.scs.stream;
+package com.mugglestar.learn.spring.scs.producer.stream;
 
 import org.springframework.cloud.stream.annotation.Output;
 import org.springframework.messaging.MessageChannel;

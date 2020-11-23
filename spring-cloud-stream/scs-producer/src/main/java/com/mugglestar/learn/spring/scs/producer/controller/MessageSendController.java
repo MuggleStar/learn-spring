@@ -1,12 +1,10 @@
-package com.mugglestar.learn.spring.scs.controller;
+package com.mugglestar.learn.spring.scs.producer.controller;
 
-import com.mugglestar.learn.spring.scs.stream.SendService;
+import com.mugglestar.learn.spring.scs.producer.stream.SendService;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author lujianrong

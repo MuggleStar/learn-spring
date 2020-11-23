@@ -1,0 +1,23 @@
+server:
+  port: 10020
+
+spring:
+  cloud:
+    stream:
+      kafka:
+        binder:
+          #          brokers: 192.168.0.200:9092
+          brokers: 127.0.0.1:9092
+      rocketmq:
+        binder:
+          name-server: 127.0.0.1:9876
+
+      default-binder: kafka
+      bindings:
+        user_register:
+          destination: test_topic_02
+          binder: kafka
+        user_login:
+          destination: test_topic_03
+          group: test_group
+          binder: rocketmq

@@ -1,6 +1,6 @@
-package com.mugglestar.learn.spring.scs;
+package com.mugglestar.learn.spring.scs.producer;
 
-import com.mugglestar.learn.spring.scs.stream.SendService;
+import com.mugglestar.learn.spring.scs.producer.stream.SendService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.stream.annotation.EnableBinding;
@@ -11,10 +11,10 @@ import org.springframework.cloud.stream.annotation.EnableBinding;
  */
 @EnableBinding({SendService.class})
 @SpringBootApplication
-public class SpringCloudStreamProviderApplication {
+public class SpringCloudStreamProducerApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SpringCloudStreamProviderApplication.class, args);
+        SpringApplication.run(SpringCloudStreamProducerApplication.class, args);
     }
 
 }
