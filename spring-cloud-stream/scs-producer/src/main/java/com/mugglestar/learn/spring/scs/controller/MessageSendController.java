@@ -18,21 +18,17 @@ public class MessageSendController {
     @Resource
     SendService producer;
 
-    @RequestMapping("/msg/{key}")
-    public String sendMsg(@PathVariable String key, @RequestBody Object msg){
-        Map<String,Object> payload = new HashMap<>();
-        payload.put(key,msg);
+    @RequestMapping("/sendMessage")
+    public String sendMsg(String message){
         //将负载送入通道
-        producer.messageOutput().send(MessageBuilder.withPayload(payload).build());
-        return "sent";
+        producer.messageOutput().send(MessageBuilder.withPayload(message).build());
+        return "success";
     }
 
-    @RequestMapping("/error/{key}")
-    public String sendErr(@PathVariable String key, @RequestBody Object err){
-        Map<String,Object> payload = new HashMap<>();
-        payload.put(key,err);
-        producer.errorOutput().send(MessageBuilder.withPayload(payload).build());
-        return "sent";
+    @RequestMapping("/sendMessage2")
+    public String sendErr(String message){
+        producer.errorOutput().send(MessageBuilder.withPayload(message).build());
+        return "success";
     }
 
 }

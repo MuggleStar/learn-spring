@@ -10,17 +10,16 @@ import org.springframework.messaging.MessageChannel;
 
 public interface SendService {
 
-    String OUTPUT_CHANNEL ="test_topic_01";
-    String ERROR_CHANNEL ="test_topic_01";
+    String USER_REGISTER ="user_register";
 
     /**
      * 通过Output注解定义输出通道
      * @return
      */
-    @Output(SendService.OUTPUT_CHANNEL)
+    @Output(SendService.USER_REGISTER)
     MessageChannel messageOutput();
 
-    @Output(SendService.ERROR_CHANNEL)
+    @Output(SendService.USER_REGISTER)
     MessageChannel errorOutput();
 
 }

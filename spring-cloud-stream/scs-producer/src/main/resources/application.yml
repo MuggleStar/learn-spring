@@ -7,11 +7,12 @@ spring:
     stream:
       kafka:
         binder:
-          brokers: 192.168.0.200:9092
+#          brokers: 192.168.0.200:9092
+          brokers: 127.0.0.1:9092
       default-binder: kafka
       bindings:
-        msg_output:
-          destination: test_topic_01
+        user_register:
+          destination: test_topic_02
           binder: kafka
 
 
