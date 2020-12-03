@@ -41,17 +41,18 @@ public class UserController {
         return token1;
     }
 
-    @GetMapping("/role")
+
+    @PostMapping("/select")
+    public String select(){
+        return "select";
+    }
+
+    @PostMapping("/role")
     @PreAuthorize("hasAnyAuthority('admin')")
     public String roleInfo(){
 
         return "role";
     }
 
-    @GetMapping("/role2")
-    @PreAuthorize("hasAnyAuthority('admin2')")
-    public String rolekdream(){
-        return "role2";
-    }
 
 }

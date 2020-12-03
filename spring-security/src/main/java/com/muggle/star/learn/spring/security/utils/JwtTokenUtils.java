@@ -15,22 +15,26 @@ public class JwtTokenUtils {
 
     public static final String TOKEN_HEADER = "Authorization";
     public static final String TOKEN_PREFIX = "Bearer ";
-    public static final String SECRET = "jwtsecret";
+    public static final String SECRET = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKB";
     public static final String ISS = "echisan";
 
-    private static final Long EXPIRATION = 60 * 60 * 3L; //过期时间3小时
+    /**
+     * 过期时间3小时
+     */
+    private static final Long EXPIRATION = 60 * 60 * 3L;
 
     private static final String ROLE = "role";
 
     /**
      * 创建token
+     *
      * @param username
      * @param role
      * @param isRememberMe
      * @return
      */
     public static String createToken(String username, String role, boolean isRememberMe) {
-        Map map = new HashMap();
+        Map<String,Object> map = new HashMap<>();
         map.put(ROLE, role);
         return Jwts.builder()
                 .signWith(SignatureAlgorithm.HS512, SECRET)
@@ -62,6 +66,12 @@ public class JwtTokenUtils {
         return (String) getTokenBody(token).get(ROLE);
     }
 
+
+    /**
+     *
+     * @param token
+     * @return
+     */
     private static Claims getTokenBody(String token) {
         Claims claims = null;
         try {
