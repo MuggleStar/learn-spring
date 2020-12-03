@@ -1,4 +1,4 @@
-package com.muggle.star.learn.spring.security.util;
+package com.muggle.star.learn.spring.security.utils;
 
 
 import com.muggle.star.learn.spring.security.SecurityApplication;
@@ -20,15 +20,15 @@ import javax.annotation.Resource;
 @SpringBootTest(classes= SecurityApplication.class)
 public class EncryptUtilTest {
 
-    @Resource
-    BCryptPasswordEncoder bCryptPasswordEncoder;
+    private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     @Test
     public void encode(){
 
-        System.out.println(bCryptPasswordEncoder.encode("password"));
         System.out.println(bCryptPasswordEncoder.encode("123456"));
-        System.out.println(bCryptPasswordEncoder.encode("123456"));
+        // 明文：123456
+        // 密文：$2a$10$vuFxav4ZXSOCq96XwRrOJOEfF3rRBZZxbxu04MlwqOTe4lvipoJ7K
+        //   盐：$2a$10$vuFxav4ZXSOCq96XwRrOJO
 
     }
     
