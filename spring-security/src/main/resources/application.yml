@@ -1,3 +1,18 @@
 
 server:
   port: 10010
+
+jwt:
+  key:
+    rsa:
+      public:
+        MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMz13lzbqZ6KO/AILabt2GpJwLr3/2s2lNIMUbHhpizT
+        QftB6vEHjXDEFncBWndgNLVbKY0AwIdr/49VL/WxN7kCAwEAAQ==
+      private:
+        MIIBVgIBADANBgkqhkiG9w0BAQEFAASCAUAwggE8AgEAAkEAzPXeXNupnoo78Agtpu3YaknAuvf/
+        azaU0gxRseGmLNNB+0Hq8QeNcMQWdwFad2A0tVspjQDAh2v/j1Uv9bE3uQIDAQABAkEAoDatXA7F
+        V02dLrNl5C/V1LfUNRK4kPk4ebzxe0f1GuGd7G0ssRqrzjuf+4S4wNHXi7HuISJsMfEGZBA986b5
+        AQIhAPI/pTubvS9KYliBIKs/s2AeBobzBJvDUzZ+OP/CAmfZAiEA2JhZ/fjkGeThunyZDHT7f8Gq
+        DDOM2ZoMrjyRPKZ+QuECIBeNoJ8fEVHbxZwdUfPUibg6sx/D2Rrb7udJdnlHf7xhAiEAmYOR9RId
+        CcVRwA1jpJKdVrV6wt8eq3QmHLBM+EHBJ8ECIQDEFD0iJIlY/HWaMzb3V9z07g751u8r1zVWpU20
+        p6LoGw==
