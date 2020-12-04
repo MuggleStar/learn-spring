@@ -15,7 +15,7 @@ import java.security.spec.*;
 @Component
 public class RsaUtils {
 
-    private static final int DEFAULT_KEY_SIZE = 512;
+    private static final int DEFAULT_KEY_SIZE = 1024;
 
     /**
      * 生成公钥与私钥
@@ -23,14 +23,17 @@ public class RsaUtils {
      * @param secret
      * @param keySize
      * @return
-     * @throws NoSuchAlgorithmException
      */
     public static KeyPair createRSAKey(String secret, int keySize) {
 
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             SecureRandom secureRandom = new SecureRandom(secret.getBytes());
+
+            // 固定生成
             keyPairGenerator.initialize(Math.max(keySize, DEFAULT_KEY_SIZE), secureRandom);
+            // 随机生成
+            keyPairGenerator.initialize(Math.max(keySize, DEFAULT_KEY_SIZE));
 
             return keyPairGenerator.genKeyPair();
         }
@@ -53,10 +56,12 @@ public class RsaUtils {
             // 解析私钥
             byte[] privateKeyBytes = Base64.decodeBase64(privateKeyStr);
             PKCS8EncodedKeySpec pkcs8EncodedKeySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
-            RSAPrivateCrtKey privateKey = (RSAPrivateCrtKey) keyFactory.generatePrivate(pkcs8EncodedKeySpec);
+            PrivateKey privateKey = keyFactory.generatePrivate(pkcs8EncodedKeySpec);
+
+            RSAPrivateCrtKey rsaPrivateCrtKey = (RSAPrivateCrtKey) privateKey;
 
             // 获取公钥
-            RSAPublicKeySpec rsaPublicKeySpec = new RSAPublicKeySpec(privateKey.getModulus(), privateKey.getPublicExponent());
+            RSAPublicKeySpec rsaPublicKeySpec = new RSAPublicKeySpec(rsaPrivateCrtKey.getModulus(), rsaPrivateCrtKey.getPublicExponent());
             PublicKey publicKey = keyFactory.generatePublic(rsaPublicKeySpec);
 
             return new KeyPair(publicKey, privateKey);

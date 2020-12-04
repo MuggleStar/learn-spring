@@ -1,7 +1,7 @@
 package com.muggle.star.learn.spring.security.controller;
 
 import com.muggle.star.learn.spring.security.entity.User;
-import com.muggle.star.learn.spring.security.utils.JwtTokenUtils;
+import com.muggle.star.learn.spring.security.utils.JwtTokenHelper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -10,7 +10,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author lujianrong
@@ -19,10 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 public class UserController {
 
-
     @Resource
     private AuthenticationManagerBuilder authenticationManagerBuilder;
-
 
     @GetMapping("/hello")
     public String index(){
@@ -37,10 +34,9 @@ public class UserController {
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(token);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         //创建jwt信息
-        String token1 = JwtTokenUtils.createToken(user.getUserName(),"admin", true);
+        String token1 = JwtTokenHelper.createToken(user.getUserName(),"admin", true);
         return token1;
     }
-
 
     @PostMapping("/select")
     public String select(){

@@ -41,11 +41,11 @@ public class RsaUtilsTest {
         System.out.println(base64Encoder.encode(key.getPrivate().getEncoded()));
         System.out.println("=========================");
 
-
     }
 
     @Test
     public void testGetRSAKey() {
+
         KeyPair keyPair = rsaUtils.getRSAKey(rsaPrivateKey);
         BASE64Encoder base64Encoder = new BASE64Encoder();
         System.out.println("=========================");

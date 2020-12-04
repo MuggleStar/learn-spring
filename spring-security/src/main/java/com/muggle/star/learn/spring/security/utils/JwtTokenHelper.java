@@ -1,7 +1,12 @@
 package com.muggle.star.learn.spring.security.utils;
 
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.SignatureException;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+import java.security.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,20 +15,28 @@ import java.util.Map;
  * @author lujianrong
  * @since 2020/12/3 19:05
  */
-public class JwtTokenUtils {
+@Component
+public class JwtTokenHelper implements InitializingBean {
 
+    public static final String ISSUER = "Muggle Star";
 
-    public static final String TOKEN_HEADER = "Authorization";
-    public static final String TOKEN_PREFIX = "Bearer ";
-    public static final String SECRET = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKB";
-    public static final String ISS = "echisan";
+    @Value("${jwt.key.rsa.private}")
+    private String rsaPrivateKey;
+
+    private Key jwtVerifierKey;
 
     /**
-     * 过期时间3小时
+     * 过期时间1小时
      */
-    private static final Long EXPIRATION = 60 * 60 * 3L;
+    private static final Long EXPIRATION = 3600L;
 
     private static final String ROLE = "role";
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        jwtVerifierKey = RsaUtils.createRSAKey("str", 1).getPrivate();
+    }
+
 
     /**
      * 创建token
@@ -36,10 +49,13 @@ public class JwtTokenUtils {
     public static String createToken(String username, String role, boolean isRememberMe) {
         Map<String,Object> map = new HashMap<>();
         map.put(ROLE, role);
+
+        KeyPair keyPair = RsaUtils.createRSAKey("str", 1);
+
         return Jwts.builder()
-                .signWith(SignatureAlgorithm.HS512, SECRET)
+                .signWith(SignatureAlgorithm.RS512, keyPair.getPrivate())
                 .setClaims(map)
-                .setIssuer(ISS)
+                .setIssuer(ISSUER)
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION * 1000))
@@ -75,7 +91,10 @@ public class JwtTokenUtils {
     private static Claims getTokenBody(String token) {
         Claims claims = null;
         try {
-            claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
+
+            KeyPair keyPair = RsaUtils.createRSAKey("str", 1);
+            claims = Jwts.parser().setSigningKey(keyPair.getPrivate()).parseClaimsJws(token).getBody();
+
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {
             e.printStackTrace();
         }
@@ -96,5 +115,6 @@ public class JwtTokenUtils {
         }
         return true;
     }
+
 
 }
