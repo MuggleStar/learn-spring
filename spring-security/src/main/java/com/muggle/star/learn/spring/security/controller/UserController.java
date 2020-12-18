@@ -1,18 +1,19 @@
 package com.muggle.star.learn.spring.security.controller;
 
-import com.muggle.star.learn.spring.security.entity.User;
+import com.muggle.star.learn.spring.security.entity.BackendUser;
+import com.muggle.star.learn.spring.security.service.UserService;
 import com.muggle.star.learn.spring.security.utils.JwtTokenHelper;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
 /**
- * @author lujianrong
+ * 后台用户
+ *
+ * @author MuggleStar
  * @since 2020/12/2 19:12
  */
 @RestController
@@ -21,21 +22,44 @@ public class UserController {
     @Resource
     private AuthenticationManagerBuilder authenticationManagerBuilder;
 
+    @Resource
+    private UserService userService;
+
+    @Resource
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @PostMapping("/login")
+    public String login(@RequestBody BackendUser user){
+
+        // 登陆验证
+        BackendUser userByUsername = userService.getUserByUsername(user.getUserName());
+        boolean matches = bCryptPasswordEncoder.matches(user.getPassword(), userByUsername.getPassword());
+        if (matches) {
+            return JwtTokenHelper.createToken(userByUsername.getUserName(),true);
+        } else {
+            return "fail";
+        }
+    }
+
     @GetMapping("/hello")
     public String index(){
         return "hello world";
     }
 
-    @PostMapping("/login")
-    public String login(@RequestBody User user){
-        // 登陆验证
-        UsernamePasswordAuthenticationToken token =
-                new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword());
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(token);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        //创建jwt信息
-        String token1 = JwtTokenHelper.createToken(user.getUserName(),"admin", true);
-        return token1;
+    @PostMapping("/insert")
+    @PreAuthorize("hasAnyAuthority('insert')")
+    public String insert(){
+        return "insert";
+    }
+    @PostMapping("/delete")
+    @PreAuthorize("hasAnyAuthority('delete')")
+    public String delete(){
+        return "delete";
+    }
+    @PostMapping("/update")
+    @PreAuthorize("hasAnyAuthority('update')")
+    public String update(){
+        return "update";
     }
 
     @PostMapping("/select")
@@ -43,12 +67,12 @@ public class UserController {
         return "select";
     }
 
-    @PostMapping("/role")
+    @PostMapping("/admin")
     @PreAuthorize("hasAnyAuthority('admin')")
     public String roleInfo(){
-
-        return "role";
+        return "admin";
     }
+
 
 
 }

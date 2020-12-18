@@ -8,33 +8,33 @@ import org.springframework.stereotype.Component;
 
 import java.security.*;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
- * @author lujianrong
+ * @author MuggleStar
  * @since 2020/12/3 19:05
  */
 @Component
 public class JwtTokenHelper implements InitializingBean {
 
-    public static final String ISSUER = "Muggle Star";
+    public static final String ISSUER = "MuggleStar";
 
     @Value("${jwt.key.rsa.private}")
-    private String rsaPrivateKey;
+    private static String rsaPrivateKey;
 
-    private Key jwtVerifierKey;
+    private static KeyPair keyPair;
 
     /**
      * 过期时间1小时
      */
-    private static final Long EXPIRATION = 3600L;
-
-    private static final String ROLE = "role";
+    private static final Long ONE_HOUR = 3600000L;
+    /**
+     * 过期时间1个月
+     */
+    private static final Long ONE_MONTH = ONE_HOUR * 24 * 30;
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        jwtVerifierKey = RsaUtils.createRSAKey("str", 1).getPrivate();
+        keyPair = RsaUtils.createRSAKey(rsaPrivateKey, 1024);
     }
 
 
@@ -42,23 +42,25 @@ public class JwtTokenHelper implements InitializingBean {
      * 创建token
      *
      * @param username
-     * @param role
      * @param isRememberMe
      * @return
      */
-    public static String createToken(String username, String role, boolean isRememberMe) {
-        Map<String,Object> map = new HashMap<>();
-        map.put(ROLE, role);
+    public static String createToken(String username, boolean isRememberMe) {
 
-        KeyPair keyPair = RsaUtils.createRSAKey("str", 1);
+        // 有效时间
+        long effectiveTime;
+        if (isRememberMe) {
+            effectiveTime = System.currentTimeMillis() + ONE_MONTH;
+        } else {
+            effectiveTime = System.currentTimeMillis() + ONE_HOUR;
+        }
 
         return Jwts.builder()
                 .signWith(SignatureAlgorithm.RS512, keyPair.getPrivate())
-                .setClaims(map)
                 .setIssuer(ISSUER)
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION * 1000))
+                .setExpiration(new Date(effectiveTime))
                 .compact();
     }
 
@@ -78,27 +80,23 @@ public class JwtTokenHelper implements InitializingBean {
         return username;
     }
 
-    public static String getUserRole(String token) {
-        return (String) getTokenBody(token).get(ROLE);
-    }
-
 
     /**
+     * 解析token
      *
      * @param token
      * @return
      */
     private static Claims getTokenBody(String token) {
-        Claims claims = null;
         try {
-
-            KeyPair keyPair = RsaUtils.createRSAKey("str", 1);
-            claims = Jwts.parser().setSigningKey(keyPair.getPrivate()).parseClaimsJws(token).getBody();
-
-        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException | IllegalArgumentException e) {
-            e.printStackTrace();
+            return Jwts.parser().setSigningKey(keyPair.getPrivate()).parseClaimsJws(token).getBody();
+        } catch (ExpiredJwtException
+                | UnsupportedJwtException
+                | MalformedJwtException
+                | SignatureException
+                | IllegalArgumentException e) {
         }
-        return claims;
+        return null;
     }
 
     /**

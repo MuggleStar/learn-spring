@@ -4,6 +4,7 @@ import com.muggle.star.learn.spring.security.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -16,22 +17,16 @@ import javax.annotation.Resource;
 /**
  * Spring-Security 配置
  *
- * @author lujianrong
+ * @author MuggleStar
  * @since 2020/12/3 10:22
  */
 @Configuration
+@EnableGlobalMethodSecurity(prePostEnabled=true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-
-    /**
-     * 注册 401 处理器
-     */
     @Resource
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    /**
-     * 注册 403 处理器
-     */
     @Resource
     private JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
@@ -40,9 +35,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers("/hello").permitAll()
-                //login 不拦截
                 .antMatchers("/login").permitAll()
-                //授权
+                .antMatchers("/logout").permitAll()
+                // 开启验证
                 .anyRequest().authenticated()
                 // 禁用session
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

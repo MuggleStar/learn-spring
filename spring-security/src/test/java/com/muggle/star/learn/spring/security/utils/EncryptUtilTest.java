@@ -13,7 +13,7 @@ import javax.annotation.Resource;
 /**
  * 加密测试
  *
- * @author lujianrong
+ * @author MuggleStar
  * @since 2020/12/3
  */
 @RunWith(SpringJUnit4ClassRunner.class)

@@ -9,7 +9,7 @@ import java.security.spec.*;
 
 /**
  * RSA 工具类
- * @author lujianrong
+ * @author MuggleStar
  * @since 2020/12/3 19:33
  */
 @Component
@@ -28,12 +28,15 @@ public class RsaUtils {
 
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-            SecureRandom secureRandom = new SecureRandom(secret.getBytes());
 
-            // 固定生成
-            keyPairGenerator.initialize(Math.max(keySize, DEFAULT_KEY_SIZE), secureRandom);
-            // 随机生成
-            keyPairGenerator.initialize(Math.max(keySize, DEFAULT_KEY_SIZE));
+            if (secret != null) {
+                // 固定生成
+                SecureRandom secureRandom = new SecureRandom(secret.getBytes());
+                keyPairGenerator.initialize(Math.max(keySize, DEFAULT_KEY_SIZE), secureRandom);
+            } else {
+                // 随机生成
+                keyPairGenerator.initialize(Math.max(keySize, DEFAULT_KEY_SIZE));
+            }
 
             return keyPairGenerator.genKeyPair();
         }

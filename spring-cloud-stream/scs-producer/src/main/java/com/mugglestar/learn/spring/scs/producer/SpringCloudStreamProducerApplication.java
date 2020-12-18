@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 
 /**
- * @author lujianrong
+ * @author MuggleStar
  * @since 2020/11/20 17:16
  */
 @EnableBinding({SendService.class})

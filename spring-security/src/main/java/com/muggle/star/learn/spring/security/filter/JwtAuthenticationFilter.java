@@ -1,5 +1,7 @@
 package com.muggle.star.learn.spring.security.filter;
 
+import com.muggle.star.learn.spring.security.entity.BackendUser;
+import com.muggle.star.learn.spring.security.service.UserService;
 import com.muggle.star.learn.spring.security.utils.JwtTokenHelper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,10 +18,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author lujianrong
+ * @author MuggleStar
  * @since 2020/12/3 16:36
  */
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
+
+    private UserService userService = new UserService();
 
     public static final String TOKEN_HEADER = "Authorization";
     public static final String TOKEN_PREFIX = "Bearer ";
@@ -56,19 +60,18 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
 
         String token = tokenHeader.replace(TOKEN_PREFIX, "");
         String username = JwtTokenHelper.getUserName(token);
-        // 获得权限 添加到权限上去
-        String role = JwtTokenHelper.getUserRole(token);
-        List<GrantedAuthority> roles = new ArrayList<GrantedAuthority>();
-        roles.add(new GrantedAuthority() {
-            @Override
-            public String getAuthority() {
-                return role;
-            }
-        });
-        if (username != null) {
-            return new UsernamePasswordAuthenticationToken(username, null, roles);
+        if (username == null) {
+            return null;
         }
-        return null;
+
+        // 获得权限 添加到权限上去
+        BackendUser userByUsername = userService.getUserByUsername(username);
+        String role = userByUsername.getRole();
+        List<GrantedAuthority> roles = new ArrayList<GrantedAuthority>();
+        roles.add((GrantedAuthority) () -> role);
+
+        return new UsernamePasswordAuthenticationToken(username, null, roles);
+
     }
 
 }
