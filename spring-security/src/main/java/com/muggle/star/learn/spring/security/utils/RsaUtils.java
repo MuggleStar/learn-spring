@@ -2,13 +2,20 @@ package com.muggle.star.learn.spring.security.utils;
 
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.stereotype.Component;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.security.*;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.spec.*;
+import java.util.Calendar;
 
 /**
  * RSA 工具类
+ *
  * @author MuggleStar
  * @since 2020/12/3 19:33
  */
@@ -39,8 +46,7 @@ public class RsaUtils {
             }
 
             return keyPairGenerator.genKeyPair();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -72,4 +78,42 @@ public class RsaUtils {
             throw new RuntimeException(e);
         }
     }
+
+
+    /**
+     * 获取密钥
+     *
+     * @param privateKey
+     * @return
+     */
+    public static PrivateKey getPrivateKey(String privateKey) {
+        try {
+            byte[] bytes = Base64.decodeBase64(privateKey);
+            PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(bytes);
+            KeyFactory factory = KeyFactory.getInstance("RSA");
+            return factory.generatePrivate(spec);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    /**
+     * 获取公钥
+     *
+     * @param publicKey
+     * @return
+     */
+    public static PublicKey getPublicKey(String publicKey) {
+
+        try {
+            byte[] bytes = Base64.decodeBase64(publicKey);
+            X509EncodedKeySpec spec = new X509EncodedKeySpec(bytes);
+            KeyFactory factory = KeyFactory.getInstance("RSA");
+            return factory.generatePublic(spec);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
