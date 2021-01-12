@@ -4,7 +4,7 @@ import org.springframework.cloud.stream.annotation.Output;
 import org.springframework.messaging.MessageChannel;
 
 /**
- * @author MuggleStar
+ * @author Madison
  * @date 2020/11/21 15:05
  */
 

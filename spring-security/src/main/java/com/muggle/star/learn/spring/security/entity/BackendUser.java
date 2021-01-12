@@ -1,7 +1,7 @@
 package com.muggle.star.learn.spring.security.entity;
 
 /**
- * @author MuggleStar
+ * @author Madison
  * @since 2020/12/3 10:28
  */
 public class BackendUser {

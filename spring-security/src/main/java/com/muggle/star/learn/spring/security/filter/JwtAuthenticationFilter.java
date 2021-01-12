@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author MuggleStar
+ * @author Madison
  * @since 2020/12/3 16:36
  */
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {

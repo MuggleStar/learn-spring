@@ -17,7 +17,7 @@ import javax.annotation.Resource;
 /**
  * Spring-Security 配置
  *
- * @author MuggleStar
+ * @author Madison
  * @since 2020/12/3 10:22
  */
 @Configuration

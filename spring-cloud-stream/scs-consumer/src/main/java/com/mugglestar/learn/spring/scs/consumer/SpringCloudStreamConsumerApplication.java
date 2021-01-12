@@ -9,7 +9,7 @@ import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.context.annotation.Bean;
 
 /**
- * @author MuggleStar
+ * @author Madison
  * @since 2020/11/23 14:33
  */
 @EnableBinding({MySink.class})

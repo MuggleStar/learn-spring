@@ -4,7 +4,7 @@ import org.springframework.cloud.stream.annotation.Input;
 import org.springframework.messaging.SubscribableChannel;
 
 /**
- * @author MuggleStar
+ * @author Madison
  * @since 2020/11/23 15:09
  */
 public interface MySink {
