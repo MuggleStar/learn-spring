@@ -1,4 +1,4 @@
-package com.muggle.star.learn.spring.kafka.consumer;
+package com.muggle.star.learn.spring.kafka.consumerb;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,9 +8,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @date 2020/11/21 17:42
  */
 @SpringBootApplication
-public class KafkaConsumerApplication {
+public class KafkaConsumerB {
     public static void main(String[] args) {
-        SpringApplication.run(KafkaConsumerApplication.class, args);
+        SpringApplication.run(KafkaConsumerB.class, args);
     }
 
 }

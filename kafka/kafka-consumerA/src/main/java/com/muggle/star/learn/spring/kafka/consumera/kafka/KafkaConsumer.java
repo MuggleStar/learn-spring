@@ -1,4 +1,4 @@
-package com.muggle.star.learn.spring.kafka.consumer.kafka;
+package com.muggle.star.learn.spring.kafka.consumera.kafka;
 
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -23,15 +23,18 @@ public class KafkaConsumer {
     /**
      * 自定义topic
      */
-    private static final String TOPIC_TEST = "test_topic_01";
+    private static final String TOPIC_TEST = "test_topic_02";
 
-    @KafkaListener(topics = TOPIC_TEST,groupId = "default")
+    @KafkaListener(topics = TOPIC_TEST,groupId = "group_a")
     public void listen(ConsumerRecord<?, ?> record) {
+
         Optional<?> kafkaMessage = Optional.ofNullable(record.value());
         if (kafkaMessage.isPresent()) {
             Object message = kafkaMessage.get();
-            logger.info("----------------- record =" + record);
-            logger.info("------------------ message =" + message);
+            String topic = record.topic();
+            int partition = record.partition();
+            long offset = record.offset();
+            logger.info(topic + ":" + partition + ":" + offset + ":" + message);
         }
     }
 

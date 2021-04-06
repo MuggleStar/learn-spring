@@ -10,7 +10,8 @@
     <version>1.0.0-SNAPSHOT</version>
     <modules>
         <module>kafka-producer</module>
-        <module>kafka-consumer</module>
+        <module>kafka-consumerA</module>
+        <module>kafka-consumerB</module>
     </modules>
 
     <!--继承spring-boot-starter-parent父工程-->
