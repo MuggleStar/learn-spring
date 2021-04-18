@@ -7,7 +7,7 @@ package learn.leetcode.hard;
  * @author lujianrong
  * @date 2021/4/10
  */
-public class Hard4 {
+public class Hard0004 {
 
 
     public static void main(String[] args) {
@@ -15,7 +15,7 @@ public class Hard4 {
         int[] nums1 = {1,3};
         int[] nums2 = {6,10};
 
-        Hard4 hard4 = new Hard4();
+        Hard0004 hard4 = new Hard0004();
         System.out.println(hard4.findMedianSortedArrays(nums1, nums2));
     }
 
