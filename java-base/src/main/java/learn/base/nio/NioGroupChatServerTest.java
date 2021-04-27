@@ -74,7 +74,7 @@ public class NioGroupChatServerTest {
      */
     private void readData(SelectionKey key, Selector selector) {
 
-        SocketChannel socketChannel;
+        SocketChannel socketChannel = null;
 
        try {
 
@@ -90,7 +90,13 @@ public class NioGroupChatServerTest {
 
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        } finally {
+           try {
+               socketChannel.close();
+           } catch (IOException e) {
+               e.printStackTrace();
+           }
+       }
 
     }
 
