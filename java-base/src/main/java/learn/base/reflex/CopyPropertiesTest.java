@@ -4,6 +4,8 @@ import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 反射处理属性复制
@@ -30,6 +32,39 @@ public class CopyPropertiesTest {
 
         Class<?> aClazz = object.getClass();
         Method[] methods = aClazz.getMethods();
+
+        // 方法出入参数校验
+        for (Method method : methods) {
+            switch (method.getName()) {
+                case "getId":
+                    if (!Long.class.equals(method.getReturnType())){
+                        System.out.println("参数类型不对getId");
+                        return;
+                    }
+                    break;
+                case "getName":
+                    if (!String.class.equals(method.getReturnType())){
+                        System.out.println("参数类型不对getName");
+                        return;
+                    }
+                    break;
+                case "getMobile":
+                    if (!String.class.equals(method.getReturnType())){
+                        System.out.println("参数类型不对getMobile");
+                        return;
+                    }
+                    break;
+                case "setMobile":
+                    if (!String.class.equals(method.getParameterTypes()[0])){
+                        System.out.println("参数类型不对setMobile");
+                        return;
+                    }
+                    break;
+                default:break;
+            }
+        }
+
+        // 取值
         for (Method method : methods) {
             switch (method.getName()) {
                 case "getId":
@@ -48,8 +83,9 @@ public class CopyPropertiesTest {
                     break;
             }
         }
-
         System.out.println(b.toString());
+
+        // 赋值
         for (Method method : methods) {
             switch (method.getName()) {
                 case "setName":
@@ -57,6 +93,12 @@ public class CopyPropertiesTest {
                     break;
                 case "setId":
                     method.invoke(object,b.getId());
+                    break;
+                case "setTags":
+                    List list = new ArrayList();
+                    list.add(123);
+                    list.add("123aaa");
+                    method.invoke(object,list);
                     break;
                 default:
                     break;
@@ -70,6 +112,7 @@ public class CopyPropertiesTest {
         private Long id;
         private String name;
         private String mobile;
+        private List<String> tags;
 
         public Long getId() {
             return id;
@@ -95,12 +138,21 @@ public class CopyPropertiesTest {
             this.mobile = mobile;
         }
 
+        public List<String> getTags() {
+            return tags;
+        }
+
+        public void setTags(List<String> tags) {
+            this.tags = tags;
+        }
+
         @Override
         public String toString() {
             return "TestDtoA{" +
                     "id=" + id +
                     ", name='" + name + '\'' +
                     ", mobile='" + mobile + '\'' +
+                    ", tags=" + tags +
                     '}';
         }
     }
