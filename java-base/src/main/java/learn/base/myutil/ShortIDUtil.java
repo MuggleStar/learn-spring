@@ -32,8 +32,11 @@ public class ShortIDUtil {
             Long value =  max - i;
             Long newValue = Long.parseLong(new StringBuffer(value.toString()).reverse().toString());
 
-            String id1 = util.change(newValue);
-            System.out.println(i+"=="+id1);
+            String id = util.change(newValue);
+            while (id.length() <10){
+                id = "0"+id;
+            }
+            System.out.println(i+"=="+newValue+"=="+id);
         }
 
     }
