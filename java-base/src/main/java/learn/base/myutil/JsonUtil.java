@@ -2,6 +2,7 @@ package learn.base.myutil;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,9 @@ public class JsonUtil {
      * @return
      */
     public static String toJson(Object object) {
+        if (object == null) {
+            return null;
+        }
         return gson.toJson(object);
     }
 
@@ -56,7 +60,8 @@ public class JsonUtil {
      */
     public static <T> T fromJson(String json, Class<T> cls) {
         T t = null;
-        if (gson != null) {
+        json = StringUtils.trimWhitespace(json);
+        if (gson != null && !StringUtils.isEmpty(json)) {
             t = gson.fromJson(json, cls);
         }
         return t;
@@ -71,8 +76,9 @@ public class JsonUtil {
      * @return
      */
     public static <T> List<T> json2List(String json, Class<T> clazz) {
+        json = StringUtils.trimWhitespace(json);
         List<T> list = null;
-        if (gson != null) {
+        if (gson != null && !StringUtils.isEmpty(json)) {
             JsonArray jsonArray = JsonParser.parseString(json).getAsJsonArray();
             for (JsonElement jsonElement : jsonArray) {
                 if (list == null) {
@@ -93,7 +99,8 @@ public class JsonUtil {
      */
     public static <T> List<Map<String, T>> json2MapList(String json, Class<T> clazz) {
         List<Map<String, T>> list = null;
-        if (gson != null) {
+        json = StringUtils.trimWhitespace(json);
+        if (gson != null && !StringUtils.isEmpty(json)) {
             list = gson.fromJson(json, new TypeToken<List<Map<String, T>>>() {
             }.getType());
         }
@@ -109,7 +116,8 @@ public class JsonUtil {
      */
     public static <T> Map<String, T> json2Map(String json, Class<T> clazz) {
         Map<String, T> map = null;
-        if (gson != null) {
+        json = StringUtils.trimWhitespace(json);
+        if (gson != null && !StringUtils.isEmpty(json)) {
             map = gson.fromJson(json, new TypeToken<Map<String, T>>() {
             }.getType());
         }
