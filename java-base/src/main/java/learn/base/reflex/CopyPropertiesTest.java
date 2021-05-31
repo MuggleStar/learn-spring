@@ -1,11 +1,12 @@
 package learn.base.reflex;
 
-import org.junit.Test;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import org.springframework.util.CollectionUtils;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 反射处理属性复制
@@ -16,187 +17,236 @@ import java.util.List;
 public class CopyPropertiesTest {
 
 
-    @Test
-    public void testCopy() throws InvocationTargetException, IllegalAccessException {
-        TestDtoA a = new TestDtoA();
-        a.setId(1L);
-        a.setMobile("15522223333");
-        this.copy(a);
-        System.out.println(a.toString());
+    /**
+     * 处理所有类型
+     * 1、Long createBy ==》String createByToName
+     * 2、Long updateBy ==》String updateByToName
+     *
+     * @param object
+     */
+    public void handleObject(Object object) {
+        List<Object> objectList = new ArrayList<>();
+        objectList.add(object);
+        this.handleObjectList(objectList);
     }
 
-    public void copy(Object object) throws InvocationTargetException, IllegalAccessException {
+    /**
+     * 处理所有类型
+     * 1、Long createBy ==》String createByToName
+     * 2、Long updateBy ==》String updateByToName
+     *
+     * @param objectList
+     */
+    public void handleObjectList(List<?> objectList) {
 
-        TestDtoB b = new TestDtoB();
-        b.setName("BBBBBBBBBBB");
+        if (CollectionUtils.isEmpty(objectList)) {
+            return;
+        }
 
-        Class<?> aClazz = object.getClass();
-        Method[] methods = aClazz.getMethods();
+        // 类方法封装处理
+        Class<?> clazz = objectList.get(0).getClass();
+        Method[] methods = clazz.getMethods();
 
-        // 方法出入参数校验
+        Map<String,Method> methodMap = new HashMap<>();
         for (Method method : methods) {
-            switch (method.getName()) {
-                case "getId":
-                    if (!Long.class.equals(method.getReturnType())){
-                        System.out.println("参数类型不对getId");
-                        return;
-                    }
-                    break;
-                case "getName":
-                    if (!String.class.equals(method.getReturnType())){
-                        System.out.println("参数类型不对getName");
-                        return;
-                    }
-                    break;
-                case "getMobile":
-                    if (!String.class.equals(method.getReturnType())){
-                        System.out.println("参数类型不对getMobile");
-                        return;
-                    }
-                    break;
-                case "setMobile":
-                    if (!String.class.equals(method.getParameterTypes()[0])){
-                        System.out.println("参数类型不对setMobile");
-                        return;
-                    }
-                    break;
-                default:break;
+            methodMap.put(method.getName(),method);
+        }
+
+        // 找出匹配的属性方法
+        Map<String,SysIdToNameEnum> idMethodMap = new HashMap<>();
+        Map<String,SysIdToNameEnum> nameMethodMap = new HashMap<>();
+        for (Method idMethod : methods) {
+            SysIdToNameEnum sysIdToNameEnum = SysIdToNameEnum.getByIdMethod(idMethod.getName());
+            if (sysIdToNameEnum == null) {
+                continue;
+            }
+            // id类型匹配
+            Class<?> idReturnType = idMethod.getReturnType();
+            if (!sysIdToNameEnum.getIdType().equals(idReturnType)){
+                continue;
+            }
+
+            // 名称类型匹配
+            Method nameMethod = methodMap.get(sysIdToNameEnum.getNameSetMethod());
+            Class<?>[] nameParameterTypes = nameMethod.getParameterTypes();
+            if (nameParameterTypes.length != 1 || !sysIdToNameEnum.getNameType().equals(nameParameterTypes[0])){
+                continue;
+            }
+            idMethodMap.put(idMethod.getName(),sysIdToNameEnum);
+            nameMethodMap.put(nameMethod.getName(),sysIdToNameEnum);
+        }
+        if (idMethodMap.size()<=0) {
+            return;
+        }
+
+        // 获取id参数
+        List<SysIdToNameDTO> sysIdToNameDTOList = new ArrayList<>();
+        for (Object object : objectList) {
+            SysIdToNameDTO sysIdToNameDTO = new SysIdToNameDTO();
+            Iterator<String> iterator = idMethodMap.keySet().iterator();
+            while (iterator.hasNext()) {
+                SysIdToNameEnum sysIdToNameEnum = idMethodMap.get(iterator.next());
+                this.handleIdParam(object,sysIdToNameDTO,sysIdToNameEnum);
+                sysIdToNameDTOList.add(sysIdToNameDTO);
             }
         }
 
-        // 取值
+        // 查询取值
+        this.handleSysIdToNameDTOList(sysIdToNameDTOList);
+
+        // 设置名称数据
+        for (int i = 0; i < objectList.size(); i++) {
+            Object object = objectList.get(i);
+            SysIdToNameDTO sysIdToNameDTO = sysIdToNameDTOList.get(i);
+            Iterator<String> iterator = nameMethodMap.keySet().iterator();
+            while (iterator.hasNext()) {
+                SysIdToNameEnum sysIdToNameEnum = nameMethodMap.get(iterator.next());
+                this.handleNameParam(object,sysIdToNameDTO,sysIdToNameEnum);
+            }
+        }
+
+    }
+
+
+    /**
+     * 查询并赋值
+     *
+     * @param sysIdToNameDTOList
+     */
+    private void handleSysIdToNameDTOList(List<SysIdToNameDTO> sysIdToNameDTOList) {
+
+        // 查询数据
+
+    }
+
+
+    /**
+     * 赋值 SysIdToNameDTO 名称 Object
+     * @param object
+     * @param sysIdToNameDTO
+     * @param idToNameEnum
+     */
+    private void handleNameParam (Object object, SysIdToNameDTO sysIdToNameDTO, SysIdToNameEnum idToNameEnum) {
+        Class<?> clazz = object.getClass();
+        Method[] methods = clazz.getMethods();
+
+        Map<String,Method> methodMap = new HashMap<>();
         for (Method method : methods) {
-            switch (method.getName()) {
-                case "getId":
-                    Object id = method.invoke(object);
-                    if (id instanceof Long) {
-                        b.setId((Long) id);
+            methodMap.put(method.getName(),method);
+        }
+        Method nameSetMethod = methodMap.get(idToNameEnum.getNameSetMethod());
+        try {
+            switch (idToNameEnum) {
+                case createBy_createByToName:
+                    if (sysIdToNameDTO.getCreateByToName() != null) {
+                        nameSetMethod.invoke(object,sysIdToNameDTO.getCreateByToName());
                     }
                     break;
-                case "getMobile":
-                    Object phone = method.invoke(object);
-                    if (phone instanceof String) {
-                        b.setPhone((String) phone);
+                case updateBy_updateByToName:
+                    if (sysIdToNameDTO.getUpdateByToName() != null) {
+                        nameSetMethod.invoke(object,sysIdToNameDTO.getUpdateByToName());
                     }
                     break;
                 default:
                     break;
             }
-        }
-        System.out.println(b.toString());
+        } catch (Exception e) {
 
-        // 赋值
+        }
+    }
+
+
+    /**
+     * 赋值 id参数到 SysIdToNameDTO
+     * @param object
+     * @param sysIdToNameDTO
+     * @param idToNameEnum
+     */
+    private void handleIdParam (Object object, SysIdToNameDTO sysIdToNameDTO, SysIdToNameEnum idToNameEnum) {
+
+        Class<?> clazz = object.getClass();
+        Method[] methods = clazz.getMethods();
+
+        Map<String,Method> methodMap = new HashMap<>();
         for (Method method : methods) {
-            switch (method.getName()) {
-                case "setName":
-                    method.invoke(object,b.getName());
+            methodMap.put(method.getName(),method);
+        }
+        Method idGetMethod = methodMap.get(idToNameEnum.getIdGetMethod());
+        try {
+            Object idData = idGetMethod.invoke(object);
+            switch (idToNameEnum) {
+                case createBy_createByToName:
+                    sysIdToNameDTO.setCreateBy((Long) idData);
                     break;
-                case "setId":
-                    method.invoke(object,b.getId());
-                    break;
-                case "setTags":
-                    List list = new ArrayList();
-                    list.add(123);
-                    list.add("123aaa");
-                    method.invoke(object,list);
+                case updateBy_updateByToName:
+                    sysIdToNameDTO.setUpdateBy((Long) idData);
                     break;
                 default:
                     break;
             }
+        } catch (Exception e) {
+
         }
     }
 
 
-    public static class TestDtoA {
 
-        private Long id;
-        private String name;
-        private String mobile;
-        private List<String> tags;
+    @Data
+    public static class SysIdToNameDTO {
 
-        public Long getId() {
-            return id;
-        }
+        /** 创建人id ==> 名称*/
+        private Long createBy;
+        private String createByToName;
 
-        public void setId(Long id) {
-            this.id = id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getMobile() {
-            return mobile;
-        }
-
-        public void setMobile(String mobile) {
-            this.mobile = mobile;
-        }
-
-        public List<String> getTags() {
-            return tags;
-        }
-
-        public void setTags(List<String> tags) {
-            this.tags = tags;
-        }
-
-        @Override
-        public String toString() {
-            return "TestDtoA{" +
-                    "id=" + id +
-                    ", name='" + name + '\'' +
-                    ", mobile='" + mobile + '\'' +
-                    ", tags=" + tags +
-                    '}';
-        }
-    }
-
-    public static class TestDtoB {
-
-        private Long id;
-        private String name;
-        private String phone;
-
-
-        public Long getId() {
-            return id;
-        }
-
-        public void setId(Long id) {
-            this.id = id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getPhone() {
-            return phone;
-        }
-
-        public void setPhone(String phone) {
-            this.phone = phone;
-        }
-
-        @Override
-        public String toString() {
-            return "TestDtoB{" +
-                    "id=" + id +
-                    ", name='" + name + '\'' +
-                    ", phone='" + phone + '\'' +
-                    '}';
-        }
+        /** 更新人id ==> 名称*/
+        private Long updateBy;
+        private String updateByToName;
 
     }
 
+
+
+    @Getter
+    @AllArgsConstructor
+    public enum SysIdToNameEnum {
+
+        // 兼容的id转名称
+        createBy_createByToName("getCreateBy","setCreateByToName",Long.class,String.class,"系统用户id=>名称"),
+        updateBy_updateByToName("getUpdateBy","setUpdateByToName",Long.class,String.class,"系统用户id=>名称"),
+        ;
+
+        /**
+         * id 方法名
+         */
+        private String idGetMethod;
+        /**
+         * 名称 方法名
+         */
+        private String nameSetMethod;
+        /**
+         * id 类型
+         */
+        private Class<?> idType;
+        /**
+         * 名称类型
+         */
+        private Class<?> nameType;
+        /**
+         * 描述
+         */
+        private String description;
+
+
+        public static Map<String,SysIdToNameEnum> lookUp = new HashMap<>();
+
+        static {
+            for (SysIdToNameEnum current : SysIdToNameEnum.values()) {
+                lookUp.put(current.getIdGetMethod(),current);
+            }
+        }
+
+        public static SysIdToNameEnum getByIdMethod(String idMethod) {
+            return lookUp.get(idMethod);
+        }
+    }
 }

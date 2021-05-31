@@ -13,49 +13,40 @@ public class ShortIDUtil {
 
     public static void main(String[] args) {
 
-        // 进制
-        int base = chars.length;
-
-        Long max = 1L;
-        for (int i=0; i< 10; i++){
-            max = max*base;
-        }
-        System.out.println(max);
-
         // 3656158440062976 = 36*10
-        // 取值 1000000000000000 防止-i反转后大于36*10
-        max = 1000000000000000L;
+        // 取值 1000000000000000 减去 i 后反转 再加上 1000000000000000 得到 1000000000000000 ~ 1999999999999999 之间的一个数
+        Long max = 1000000000000000L;
+        Long add = 1000000000000000L;
         ShortIDUtil util = new ShortIDUtil();
-        int i = 0;
+        long i = 99999999999998L;
         while (true){
+            Long value =  i > max ? i - max : max - i;
+            StringBuffer stringBuffer = new StringBuffer(value.toString());
+            stringBuffer.reverse();
+            Long newValue = Long.parseLong(stringBuffer.toString());
+            newValue = newValue + add;
+            StringBuffer idBuffer = util.change(newValue);
+            System.out.println(i+"=="+newValue+"=="+idBuffer.toString());
             i++;
-            Long value =  max - i;
-            Long newValue = Long.parseLong(new StringBuffer(value.toString()).reverse().toString());
-
-            String id = util.change(newValue);
-            while (id.length() <10){
-                id = "0"+id;
-            }
-            System.out.println(i+"=="+newValue+"=="+id);
         }
 
     }
 
 
-    public String change(long value) {
+    public StringBuffer change(long value) {
 
         int base = chars.length;
 
-        String result = "";
+        StringBuffer stringBuffer = new StringBuffer();
 
         long left = value;
         while (left > 0){
             long longindex = left%base;
             int index = (int) longindex;
-            result += chars[index];
+            stringBuffer.append(chars[index]);
             left = left/base;
         }
-        return result;
+        return stringBuffer;
     }
 
 
