@@ -6,50 +6,39 @@ package learn.base.myutil;
  */
 public class ShortIDUtil {
 
-    public static String[] chars = {"0","1","2","3","4","5","6","7","8","9",
-            // "a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z",
-            "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
+    private static String[] chars = {"0","1","2","3","4","5","6","7","8","9",
+            "a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"};
 
 
-    public static void main(String[] args) {
+    /**
+     * 传入一个不大于 1000000000000000L 的数，返回 10 位的字符串，入参不重复则出参唯一
+     *
+     * 取值 1000000000000000 减去 value 后反转 再加上 1000000000000000 得到 1000000000000000 ~ 1999999999999999 之间的一个数
+     * 的数转 36 进制
+     *
+     * @param value
+     * @return
+     */
+    public static String getStringId(long value) {
 
-        // 3656158440062976 = 36*10
-        // 取值 1000000000000000 减去 i 后反转 再加上 1000000000000000 得到 1000000000000000 ~ 1999999999999999 之间的一个数
-        Long max = 1000000000000000L;
-        Long add = 1000000000000000L;
-        ShortIDUtil util = new ShortIDUtil();
-        long i = 99999999999998L;
-        while (true){
-            Long value =  i > max ? i - max : max - i;
-            StringBuffer stringBuffer = new StringBuffer(value.toString());
-            stringBuffer.reverse();
-            Long newValue = Long.parseLong(stringBuffer.toString());
-            newValue = newValue + add;
-            StringBuffer idBuffer = util.change(newValue);
-            System.out.println(i+"=="+newValue+"=="+idBuffer.toString());
-            i++;
+        Long maxValue = 1000000000000000L;
+        if (value > maxValue) {
+            throw new RuntimeException("失败");
         }
-
-    }
-
-
-    public StringBuffer change(long value) {
+        String newValueStr = new StringBuilder(Long.toString(maxValue - value)).reverse().toString();
+        long newValue = Long.parseLong(newValueStr) + maxValue;
 
         int base = chars.length;
-
-        StringBuffer stringBuffer = new StringBuffer();
-
-        long left = value;
+        StringBuilder stringBuffer = new StringBuilder();
+        long left = newValue;
         while (left > 0){
-            long longindex = left%base;
-            int index = (int) longindex;
+            long longIndex = left%base;
+            int index = (int) longIndex;
             stringBuffer.append(chars[index]);
             left = left/base;
         }
-        return stringBuffer;
+        return stringBuffer.toString();
     }
-
-
 
 
 }
