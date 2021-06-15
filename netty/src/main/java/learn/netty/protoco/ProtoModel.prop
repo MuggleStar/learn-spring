@@ -1,0 +1,41 @@
+syntax = "proto3";
+option optimize_for = SPEED; // 加快解析
+option java_package = "learn.netty.protoco";   //指定生成到哪个包下
+option java_outer_classname = "ProtoModel"; //外部类名, 文件名
+
+message MessageModel {
+
+  // 定义一个枚举类型，在proto3 要求enum的编号从0开始
+  enum DataType {
+    StudentType = 0;
+    WorkerType = 1;
+  }
+  //表示每次枚举类型最多只能出现其中的一个, 节省空间
+  oneof dataBody {
+    Student student = 1;
+    Worker worker = 2;
+  }
+
+  // 数据类型
+  DataType dataType = 3;
+
+
+}
+
+// index = 1， 学生
+message Student {
+  // id
+  int32 id = 1;
+  // 名称
+  string name = 2;
+}
+
+// index = 2， 工人
+message Worker {
+  // id
+  int32 id = 1;
+  // 名称
+  string name = 2;
+  // 年龄
+  int32 age = 3;
+}

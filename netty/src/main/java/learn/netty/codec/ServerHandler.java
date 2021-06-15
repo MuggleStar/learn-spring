@@ -1,4 +1,4 @@
-package learn.netty.protocoltcp;
+package learn.netty.codec;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

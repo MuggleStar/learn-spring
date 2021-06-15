@@ -1,4 +1,4 @@
-package learn.netty.protocoltcp;
+package learn.netty.codec;
 
 /**
  * 协议包，把数据转换成二进制传输

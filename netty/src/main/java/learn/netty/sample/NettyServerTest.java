@@ -48,7 +48,7 @@ public class NettyServerTest {
             // 注册监听器
             channelFuture.addListener(new ServerListenerTest());
 
-            //对关闭通道进行监听
+            // 关闭通道
             channelFuture.channel().closeFuture().sync();
         } catch (Exception e) {
             e.printStackTrace();
@@ -63,6 +63,11 @@ public class NettyServerTest {
      */
     public static class ServerListenerTest implements ChannelFutureListener{
 
+        /**
+         * 对关闭通道进行监听
+         * @param future
+         * @throws Exception
+         */
         @Override
         public void operationComplete(ChannelFuture future) throws Exception {
             if(future.isSuccess()) {
