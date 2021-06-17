@@ -1,4 +1,4 @@
-package learn.netty.codec;
+package learn.netty.tcppack;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -7,7 +7,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import org.junit.Test;
 
 /**
- * 客户端
+ * 客户端，与普通tcp做对比
  * @author lujianrong
  * @date 2021/6/10
  */

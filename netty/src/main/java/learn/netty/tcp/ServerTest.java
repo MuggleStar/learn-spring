@@ -1,4 +1,4 @@
-package learn.netty.codec;
+package learn.netty.tcp;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -9,7 +9,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.junit.Test;
 
 /**
- * 服务端
+ * 服务端，演示拆包粘包问题
  * @author lujianrong
  * @date 2021/6/10
  */

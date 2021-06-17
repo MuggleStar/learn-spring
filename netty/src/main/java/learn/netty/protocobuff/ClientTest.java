@@ -1,18 +1,13 @@
-package learn.netty.protoco;
+package learn.netty.protocobuff;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
-import io.netty.util.CharsetUtil;
 import org.junit.Test;
-
-import java.util.Scanner;
 
 /**
  * @author lujianrong

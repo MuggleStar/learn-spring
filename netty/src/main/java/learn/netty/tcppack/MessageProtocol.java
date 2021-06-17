@@ -1,4 +1,4 @@
-package learn.netty.codec;
+package learn.netty.tcppack;
 
 /**
  * 协议包，把数据转换成二进制传输

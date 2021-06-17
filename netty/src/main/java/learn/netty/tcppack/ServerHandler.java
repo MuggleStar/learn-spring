@@ -1,4 +1,4 @@
-package learn.netty.codec;
+package learn.netty.tcppack;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

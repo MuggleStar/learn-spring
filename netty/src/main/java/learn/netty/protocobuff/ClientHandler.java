@@ -1,9 +1,8 @@
-package learn.netty.protoco;
+package learn.netty.protocobuff;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
-import java.util.Date;
 import java.util.Random;
 
 /**

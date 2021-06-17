@@ -1,4 +1,4 @@
-package learn.netty.protoco;
+package learn.netty.protocobuff;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
